@@ -37,6 +37,8 @@ def apply_env_file(path) -> int:
             if not key.replace("_", "").isalnum() or key[0].isdigit():
                 continue
             value = value.strip().strip('"').strip("'")
+            if not value:
+                continue
             if key not in os.environ:
                 os.environ[key] = value
                 applied += 1
