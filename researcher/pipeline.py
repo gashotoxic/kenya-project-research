@@ -72,6 +72,7 @@ def run(
     for idea in proposed:
         history.record_proposal(idea, run_id, run_date)
 
+    delivery = None
     counts = {
         "scored": len(ideas),
         "proposed": len(proposed),
@@ -79,7 +80,19 @@ def run(
         "rejected": len(rejected),
         "deduped": len(deduped),
     }
-    run_record = {"run_id": run_id, "date": run_date.isoformat(), **counts}
+    if do_notify:
+        delivery = notify.send_digest(
+            backlog.render_digest(run_id, run_date.isoformat(), proposed, counts),
+            chat_id=chat_id,
+        )
+
+    run_record = {
+        "run_id": run_id,
+        "date": run_date.isoformat(),
+        **counts,
+        "message_id": (delivery or {}).get("message_id"),
+        "notify_ok": (delivery or {}).get("ok"),
+    }
     history.record_run(run_record)
     run_log = history.runs()
 

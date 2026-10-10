@@ -15,7 +15,7 @@ import os
 import sys
 from pathlib import Path
 
-from . import pipeline, sources
+from . import envload, pipeline, sources
 from .scoring import evaluate, gate_summary
 from .schema import IdeaError, load_inbox
 
@@ -105,6 +105,7 @@ def cmd_run(args) -> int:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
+    envload.load_env()
     try:
         if args.command == "check":
             return cmd_check(args)

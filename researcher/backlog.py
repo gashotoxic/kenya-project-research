@@ -122,11 +122,14 @@ def render_backlog(
     out.append("## Run log")
     out.append("")
     for record in run_log:
-        out.append(
+        line = (
             f"- {record['run_id']} ({record['date']}): {record['scored']} scored · "
             f"{record['proposed']} proposed · {record['held']} held · "
             f"{record['rejected']} rejected · {record['deduped']} deduped"
         )
+        if record.get("message_id") is not None:
+            line += f" · telegram message_id {record['message_id']}"
+        out.append(line)
     out.append("")
     return "\n".join(out)
 

@@ -108,6 +108,11 @@ scores outside 0-5, or fewer than 2 distinct http(s) source URLs fail the run.
 | `KPR_INBOX` | inbox path override | no |
 | `KPR_BACKLOG_PATH` | backlog path override | no |
 | `KPR_STATE_DIR` | dedup state path override | no |
+| `KPR_ENV_FILE` / `KPR_SKIP_ENV_FILE` | env-file loading control | no |
+
+On the Hermes fleet machine the CLI auto-loads `~/.hermes/profiles/scout/.env`
+then `~/.hermes/.env` for missing vars only (real environment always wins);
+elsewhere, export the vars. Set `KPR_SKIP_ENV_FILE=1` to disable.
 
 Secret handling: the notify module redacts the token from every error before
 it leaves the module. `grep` proof that no credential lives in this repo:

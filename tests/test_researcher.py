@@ -232,7 +232,6 @@ class PipelineTests(unittest.TestCase):
 class NotifyUnitTests(unittest.TestCase):
     def test_redaction(self):
         self.assertEqual(_redact("token=abc123", ["abc123"]), "token=<redacted>")
-
     def test_chat_id_resolution_forms(self):
         import os
         old = os.environ.get("TELEGRAM_CHAT_ID")
@@ -245,6 +244,30 @@ class NotifyUnitTests(unittest.TestCase):
                 del os.environ["TELEGRAM_CHAT_ID"]
             else:
                 os.environ["TELEGRAM_CHAT_ID"] = old
+
+
+class EnvloadTests(unittest.TestCase):
+    def test_apply_env_file_sets_gaps_only(self):
+        from researcher.envload import apply_env_file
+        import os
+        with tempfile.TemporaryDirectory() as tmp:
+            env_file = Path(tmp) / "x.env"
+            eq = chr(61)
+            env_file.write_text(chr(10).join([
+                '# comment',
+                'export KPR_TEST_A' + eq + 'skip',
+                'KPR_TEST_B' + eq + 'file',
+                'KPR_TEST_A' + eq + 'breaker=2',
+            ]) + chr(10))
+            os.environ["KPR_TEST_A"] = "preset"
+            try:
+                applied = apply_env_file(env_file)
+                self.assertEqual(os.environ["KPR_TEST_A"], "preset")
+                self.assertEqual(os.environ["KPR_TEST_B"], "file")
+                self.assertEqual(applied, 1)
+            finally:
+                del os.environ["KPR_TEST_A"]
+                del os.environ["KPR_TEST_B"]
 
 
 if __name__ == "__main__":
