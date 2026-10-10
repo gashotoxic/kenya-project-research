@@ -124,7 +124,7 @@ grep -rniE '([0-9]{8,10}:AA[A-Za-z0-9_-]{30,}|sk-[A-Za-z0-9]{20,}|cpk_[a-f0-9]{8
 ## Tests
 
 ```bash
-python3 -m unittest discover -s tests    # 25 tests, stdlib only, no network
+python3 -m unittest discover -s tests    # 26 tests, stdlib only, no network
 ```
 
 Covered: schema strictness, gate matrix (total/pain/buildability), ranking,
